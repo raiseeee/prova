@@ -53,6 +53,10 @@ if st.button("🔄 Aggiorna Dati"):
     st.write(" Mi hai cliccato")
     with st.spinner("Caricamento in corso..."):
         players = get_top_players()
+        players = get_top_players()
+    if not players:
+        st.warning("⚠️ Nessun giocatore trovato. Forse il sito ATP ha cambiato struttura?")
+        st.stop()
         dati_finali = []
 
         for player in players:
