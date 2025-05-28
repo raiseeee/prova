@@ -40,10 +40,10 @@ def calculate_stats(match_data):
     wins = sum(1 for m in match_data if m["Result"] == "W")
     return round(wins / total * 100, 2) if total > 0 else 0.0
 
-st.title("🎾 Statistiche Giocatori Tennis + Quote Scommesse (Demo)")
-st.markdown("Analisi dei top 10 giocatori ATP con dati simulati")
+st.title("Statistiche")
+st.markdown("prova")
 
-if st.button("🔄 Aggiorna Dati"):
+if st.button("Aggiorna Dati"):
     players = get_top_players()
     final_data = []
 
@@ -60,6 +60,7 @@ if st.button("🔄 Aggiorna Dati"):
             "Win Rate (%)": win_rate,
             "Simulated Odds": odds
         })
+        
+    import numpy as np
+df["Simulated Odds"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
 
-    df = pd.DataFrame(final_data)
-    st.dataframe(df.sort_values(by="Simulated Odds"))
