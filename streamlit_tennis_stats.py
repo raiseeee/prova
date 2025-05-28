@@ -51,16 +51,17 @@ if st.button("Aggiorna Dati"):
         name = player["Name"]
         simulated_matches = simulate_recent_matches()
         win_rate = calculate_stats(simulated_matches)
-        odds = simulate_odds(name)
+        odds = simulate(name)
         final_data.append({
             "Rank": player["Rank"],
             "Name": name,
             "Country": player["Country"],
             "Points": player["Points"],
             "Win Rate (%)": win_rate,
-            "Simulated Odds": odds
+            "Simulated": odds
         })
-        
+    df = pd.DataFrame(Simulated)  # o qualunque sia il nome della tua lista    
     import numpy as np
-df["Simulated Odds"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
+    df["Simulated"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
+
 
