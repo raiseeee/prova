@@ -60,5 +60,8 @@ if st.button("Aggiorna Dati"):
             "Win Rate (%)": win_rate,
             "Simulated": odds
         })
-    st.write(df)
-    df = pd.DataFrame(Simulated)  # o qualunque sia il nome della tua lista    
+        if not df.empty:
+    df["Simulated Odds"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
+    else:
+        st.error("DataFrame vuoto: nessun giocatore trovato.")
+    df["Simulated Odds"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
