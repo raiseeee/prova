@@ -8,28 +8,31 @@ import altair as alt
 # Imposta intestazioni per simulare browser
 headers = {"User-Agent": "Mozilla/5.0"}
 
-# Recupero top 10 giocatori ATP
+from playwright.sync_api import sync_playwright
+#proca
 def get_top_players():
-    try:
-        url = "https://www.atptour.com/en/rankings/singles?rankRange=0-100"
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.content, "html.parser")
+    players = []
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto("https://www.atptour.com/en/rankings/singles", timeout=60000)
+        page.wait_for_selector("table.ranking-list")
 
-        players = []
-        rows = soup.select("table.ranking-list tbody tr")
+        rows = page.query_selector_all("table.ranking-list tbody tr")
         for row in rows[:10]:
-            rank = row.select_one(".rank-cell").get_text(strip=True)
-            name = row.select_one(".player-cell").get_text(strip=True)
-            country = row.select_one(".country-cell img")["alt"]
-            points = row.select_one(".points-cell").get_text(strip=True)
+            rank = row.query_selector(".rank-cell").inner_text().strip()
+            name = row.query_selector(".player-cell").inner_text().strip()
+            country = row.query_selector(".country-cell img").get_attribute("alt")
+            points = row.query_selector(".points-cell").inner_text().strip()
             players.append({
                 "Rank": rank,
                 "Name": name,
                 "Country": country,
                 "Points": points
             })
-        return players
+
+        browser.close()
+    return players
     except Exception as e:
         st.error(f"Errore nel recupero dati: {e}")
         return []
