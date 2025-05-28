@@ -62,7 +62,3 @@ if st.button("Aggiorna Dati"):
         })
     st.write(df)
     df = pd.DataFrame(Simulated)  # o qualunque sia il nome della tua lista    
-    import numpy as np
-    df["Simulated"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
-
-
