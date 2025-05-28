@@ -40,8 +40,8 @@ def calculate_stats(match_data):
     wins = sum(1 for m in match_data if m["Result"] == "W")
     return round(wins / total * 100, 2) if total > 0 else 0.0
 
-st.title("Statistiche")
-st.markdown("prova")
+st.title("Statistiche") # titolo
+st.markdown("prova")    # sottotitolo
 
 if st.button("Aggiorna Dati"):
     players = get_top_players()
@@ -60,6 +60,7 @@ if st.button("Aggiorna Dati"):
             "Win Rate (%)": win_rate,
             "Simulated": odds
         })
+    st.write(df)
     df = pd.DataFrame(Simulated)  # o qualunque sia il nome della tua lista    
     import numpy as np
     df["Simulated"] = np.round(np.random.uniform(1.5, 3.5, size=len(df)), 2)
