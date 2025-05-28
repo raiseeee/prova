@@ -11,7 +11,7 @@ headers = {"User-Agent": "Mozilla/5.0"}
 # Recupero top 10 giocatori ATP
 def get_top_players():
     try:
-        url = "https://www.atptour.com/en/rankings/singles?rankRange=0-5000"
+        url = "https://www.atptour.com/en/rankings/singles?rankRange=0-100"
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
         soup = BeautifulSoup(response.content, "html.parser")
