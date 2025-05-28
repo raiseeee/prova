@@ -10,7 +10,7 @@ headers = {
 }
 
 def get_top_players():
-    if not players:
+if not players:
     st.warning("⚠️ Nessun giocatore trovato. Forse il sito ATP ha cambiato struttura?") 
     st.stop()
     try:
