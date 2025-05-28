@@ -27,7 +27,7 @@ def get_top_players():
         })
     return players
 
-def simulate_odds(player_name):
+def simulate(player_name):
     return round(random.uniform(1.5, 3.5), 2)
 
 def simulate_recent_matches():
