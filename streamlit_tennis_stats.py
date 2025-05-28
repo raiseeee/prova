@@ -5,12 +5,23 @@ import numpy as np
 
 # Titolo
 st.title("Tennis Stats - Top 10 ATP")
-
-# Lista simulata di giocatori
-players = [
-    "Novak Djokovic", "Carlos Alcaraz", "Jannik Sinner", "Daniil Medvedev", "Alexander Zverev",
-    "Stefanos Tsitsipas", "Andrey Rublev", "Casper Ruud", "Hubert Hurkacz", "Taylor Fritz"
-]
+def get_top_players():
+    url = "https://www.atptour.com/en/rankings/singles"
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    players = []
+    for row in soup.select("table.ranking-list tbody tr")[:10]:
+        rank = row.select_one(".rank-cell").get_text(strip=True)
+        name = row.select_one(".player-cell").get_text(strip=True)
+        country = row.select_one(".country-cell img")["alt"]
+        points = row.select_one(".points-cell").get_text(strip=True)
+        players.append({
+            "Rank": rank,
+            "Name": name,
+            "Country": country,
+            "Points": points
+        })
+    return players
 
 # Generazione statistiche simulate
 simulated_stats = []
