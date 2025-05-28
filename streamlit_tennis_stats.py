@@ -3,13 +3,12 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import random
+import altair as alt  # Per i grafici
 
-# Header per simulare un browser
 headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
-# Funzione per ottenere i top 10 giocatori ATP
 def get_top_players():
     try:
         url = "https://www.atptour.com/en/rankings/singles"
@@ -33,26 +32,23 @@ def get_top_players():
         st.error(f"Errore nel recupero dei dati ATP: {e}")
         return []
 
-# Simula una quota per scommesse
 def simulate_odds(player_name):
     return round(random.uniform(1.5, 3.5), 2)
 
-# Simula gli ultimi 5 match con risultati casuali
 def simulate_recent_matches():
-    risultati = ["W", "L"]  # W = vittoria, L = sconfitta
+    risultati = ["W", "L"]
     return [{"Risultato": random.choice(risultati)} for _ in range(5)]
 
-# Calcola la percentuale di vittorie
 def calculate_stats(match_data):
     totale = len(match_data)
     vittorie = sum(1 for m in match_data if m["Risultato"] == "W")
     return round(vittorie / totale * 100, 2) if totale > 0 else 0.0
 
-# Titolo e descrizione
+# Titolo app
 st.title("🎾 Statistiche Giocatori Tennis + Quote Scommesse (Demo)")
 st.markdown("Analisi dei top 10 giocatori ATP con dati simulati")
 
-# Bottone per aggiornare i dati
+# Bottone per aggiornare
 if st.button("🔄 Aggiorna Dati"):
     with st.spinner("Caricamento in corso..."):
         players = get_top_players()
@@ -69,15 +65,41 @@ if st.button("🔄 Aggiorna Dati"):
                 "Paese": player["Paese"],
                 "Punti ATP": player["Punti"],
                 "Percentuale Vittorie (%)": win_rate,
-                "Quota Simulata": quota
+                "Quota Simulata": quota,
+                "Match Simulati": match_simulati
             })
 
         if dati_finali:
             df = pd.DataFrame(dati_finali)
-            df["Quota Simulata"] = df["Quota Simulata"].astype(float)
-            df["Percentuale Vittorie (%)"] = df["Percentuale Vittorie (%)"].astype(float)
 
-            st.dataframe(df.sort_values(by="Quota Simulata").style.format({
-                "Percentuale Vittorie (%)": "{:.1f}%",
-                "Quota Simulata": "{:.2f}"
-            }))
+            # Filtro per nazione
+            nazioni = sorted(df["Paese"].unique())
+            nazione_selezionata = st.selectbox("🌍 Filtra per nazione", options=["Tutte"] + nazioni)
+
+            if nazione_selezionata != "Tutte":
+                df = df[df["Paese"] == nazione_selezionata]
+
+            # Tabella principale
+            st.subheader("📋 Tabella Statistiche")
+            st.dataframe(df[["Posizione", "Nome", "Paese", "Punti ATP", "Percentuale Vittorie (%)", "Quota Simulata"]]
+                         .sort_values(by="Quota Simulata").style.format({
+                             "Percentuale Vittorie (%)": "{:.1f}%",
+                             "Quota Simulata": "{:.2f}"
+                         }))
+
+            # Grafico a barre del win rate
+            st.subheader("📊 Percentuale di Vittorie Simulate")
+            chart = alt.Chart(df).mark_bar().encode(
+                x=alt.X("Nome", sort="-y"),
+                y="Percentuale Vittorie (%)",
+                tooltip=["Nome", "Percentuale Vittorie (%)"]
+            ).properties(width=700, height=400)
+            st.altair_chart(chart)
+
+            # Espansione dettagli match
+            st.subheader("📂 Dettaglio Match Simulati")
+            for _, row in df.iterrows():
+                with st.expander(f"{row['Nome']} ({row['Paese']})"):
+                    st.write(f"**Win Rate**: {row['Percentuale Vittorie (%)']}%")
+                    st.write(f"**Quota simulata**: {row['Quota Simulata']}")
+                    st.table(pd.DataFrame(row["Match Simulati"]))
