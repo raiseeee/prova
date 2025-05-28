@@ -50,6 +50,7 @@ st.markdown("Analisi dei top 10 giocatori ATP con dati simulati")
 
 # Bottone per aggiornare
 if st.button("🔄 Aggiorna Dati"):
+    st.write(" Mi hai cliccato")
     with st.spinner("Caricamento in corso..."):
         players = get_top_players()
         dati_finali = []
